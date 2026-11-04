@@ -7,27 +7,24 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sarayasecas.login_compose.R
 import com.sarayasecas.login_compose.ui.theme.Login_composeTheme
-import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.sin
 
 
 @Composable
@@ -46,107 +43,80 @@ fun WelcomeScreen(
         Spacer(Modifier.height(32.dp))
 
 
-        LogoCircular(icono = R.drawable.ic_lock_open, tamanoIcono = 40.dp)
+        LogoCircular(icono = R.drawable.ic_moto, tamanoIcono = 40.dp)
 
         Spacer(Modifier.height(24.dp))
 
         Text(
-            text = "Bienvenido",
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onSurface,
+            text = "Listo para rodar",
+            style = MaterialTheme.typography.headlineMedium.copy(shadow = sombraTexto),
+            color = Color.White,
         )
         Spacer(Modifier.height(4.dp))
         Text(
             text = nombre,
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.headlineMedium.copy(shadow = sombraTexto),
+            color = Color.White,
+            fontWeight = FontWeight.Bold,
         )
 
         Spacer(Modifier.height(24.dp))
 
 
-        Fireworks(modifier = Modifier.weight(1f))
+        Spacer(Modifier.weight(1f))
 
         Spacer(Modifier.height(24.dp))
 
-        OutlinedButton(
-            onClick = onCerrarSesion,
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary),
-        ) {
-            Text("Cerrar sesión")
+        Button(onClick = onCerrarSesion) {
+            Text("Bajarse de la moto")
         }
 
         Spacer(Modifier.height(16.dp))
     }
 }
-
+private val sombraTexto = Shadow(color = Color.Black, offset = Offset(2f, 2f), blurRadius = 8f)
 
 @Composable
-private fun Fireworks(modifier: Modifier = Modifier) {
+private fun BanderaMeta(modifier: Modifier = Modifier) {
 
-    val morado = MaterialTheme.colorScheme.primary
-    val rosado = MaterialTheme.colorScheme.tertiary
-    val gris = MaterialTheme.colorScheme.secondary
+    val negro = MaterialTheme.colorScheme.secondary
+    val rojo = MaterialTheme.colorScheme.primary
 
     Canvas(modifier = modifier.fillMaxWidth()) {
 
-        val u = minOf(size.width / 312f, size.height / 400f)
-
-
-        translate(left = (size.width - 312f * u) / 2f) {
-
-            drawBurst(Offset(156 * u, 120 * u), 96 * u, 14, 5 * u, morado)
-            drawBurst(Offset(64 * u, 268 * u), 52 * u, 10, 4 * u, rosado)
-            drawBurst(Offset(256 * u, 306 * u), 48 * u, 9, 4 * u, gris)
-
-
-            drawSparkle(Offset(40 * u, 40 * u), 11 * u, rosado)
-            drawSparkle(Offset(280 * u, 34 * u), 13 * u, morado)
-            drawSparkle(Offset(288 * u, 160 * u), 8 * u, gris)
-            drawSparkle(Offset(24 * u, 150 * u), 9 * u, morado)
-            drawSparkle(Offset(150 * u, 250 * u), 10 * u, gris)
-            drawSparkle(Offset(160 * u, 380 * u), 7 * u, rosado)
-        }
-    }
-}
-
-
-private fun DrawScope.drawBurst(centro: Offset, radio: Float, rayos: Int, grosor: Float, color: Color) {
-    val radioPunto = grosor * 0.9f
-
-    for (i in 0 until rayos) {
-
-        val angulo = 2 * PI * i / rayos - PI / 2
-        val direccion = Offset(cos(angulo).toFloat(), sin(angulo).toFloat())
-        val largo = if (i % 2 == 0) radio else radio * 0.72f
+        val columnas = 6
+        val filas = 4
+        val lado = minOf(size.width * 0.7f / columnas, size.height * 0.5f / filas)
+        val ancho = lado * columnas
+        val alto = lado * filas
+        val izquierda = (size.width - ancho) / 2f
+        val arriba = (size.height - alto * 1.8f) / 2f
 
         drawLine(
-            color = color,
-            start = centro + direccion * (radio * 0.38f),
-            end = centro + direccion * largo,
-            strokeWidth = grosor,
+            color = rojo,
+            start = Offset(izquierda, arriba - lado * 0.3f),
+            end = Offset(izquierda, arriba + alto * 1.8f),
+            strokeWidth = 6.dp.toPx(),
             cap = StrokeCap.Round,
         )
-        drawCircle(color, radioPunto, centro + direccion * (largo + radioPunto * 3.2f))
-    }
-    drawCircle(color, radioPunto * 1.4f, centro)
-}
 
+        for (fila in 0 until filas) {
+            for (columna in 0 until columnas) {
+                drawRect(
+                    color = if ((fila + columna) % 2 == 0) negro else Color.White,
+                    topLeft = Offset(izquierda + columna * lado, arriba + fila * lado),
+                    size = Size(lado, lado),
+                )
+            }
+        }
 
-private fun DrawScope.drawSparkle(centro: Offset, medida: Float, color: Color) {
-    val c = medida * 0.2f
-    val estrella = Path().apply {
-        moveTo(centro.x, centro.y - medida)
-        lineTo(centro.x + c, centro.y - c)
-        lineTo(centro.x + medida, centro.y)
-        lineTo(centro.x + c, centro.y + c)
-        lineTo(centro.x, centro.y + medida)
-        lineTo(centro.x - c, centro.y + c)
-        lineTo(centro.x - medida, centro.y)
-        lineTo(centro.x - c, centro.y - c)
-        close()
+        drawRect(
+            color = negro,
+            topLeft = Offset(izquierda, arriba),
+            size = Size(ancho, alto),
+            style = Stroke(width = 2.dp.toPx()),
+        )
     }
-    drawPath(estrella, color)
 }
 
 @Preview(name = "Galaxy S24", showBackground = true, widthDp = 360, heightDp = 780)

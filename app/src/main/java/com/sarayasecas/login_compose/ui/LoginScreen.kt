@@ -1,5 +1,6 @@
 package com.sarayasecas.login_compose.ui
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,6 +19,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -28,7 +30,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -64,18 +68,18 @@ fun LoginScreen(
     ) {
         Spacer(Modifier.height(40.dp))
 
-        LogoCircular(icono = R.drawable.ic_lock, tamanoIcono = 32.dp)
+        LogoCircular(icono = R.drawable.ic_moto, tamanoIcono = 40.dp)
         Spacer(Modifier.height(24.dp))
         Text(
-            text = "Bienvenido",
+            text = "Bienvenido, motero",
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onSurface,
         )
         Spacer(Modifier.height(8.dp))
         Text(
-            text = "Inicia sesión para continuar",
+            text = "Entra para arrancar tu ruta",
             style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = MaterialTheme.colorScheme.onSurface,
         )
 
         Spacer(Modifier.height(32.dp))
@@ -88,6 +92,7 @@ fun LoginScreen(
                 hayError = false
             },
             label = { Text("Correo electrónico") },
+            colors = coloresCampo(),
             singleLine = true,
             isError = hayError,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
@@ -104,6 +109,7 @@ fun LoginScreen(
                 hayError = false
             },
             label = { Text("Contraseña") },
+            colors = coloresCampo(),
             singleLine = true,
             isError = hayError,
             supportingText = { if (hayError) Text("Correo o contraseña incorrectos") },
@@ -134,8 +140,11 @@ fun LoginScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End,
         ) {
-            TextButton(onClick = { /* pendiente: recuperar contraseña */ }) {
-                Text("¿Olvidaste tu contraseña?")
+            TextButton(
+                onClick = { },
+                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onSurface),
+            ) {
+                Text("¿Olvidaste tu contraseña?", fontWeight = FontWeight.Bold)
             }
         }
 
@@ -145,37 +154,41 @@ fun LoginScreen(
         Button(
             onClick = {
                 if (email.trim() == CORREO_CORRECTO && password == CLAVE_CORRECTA) {
-                    onLoginCorrecto(NOMBRE_USUARIO)   // ¡acertó! Avisamos y enviamos el nombre
+                    onLoginCorrecto(NOMBRE_USUARIO)
                 } else {
-                    hayError = true                   // falló: mostramos el error
+                    hayError = true
                 }
             },
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Text("Iniciar sesión")
+            Text("Arrancar")
         }
 
         Spacer(Modifier.height(24.dp))
 
 
         Row(verticalAlignment = Alignment.CenterVertically) {
-            HorizontalDivider(modifier = Modifier.weight(1f))
+            HorizontalDivider(modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.secondary)
             Text(
                 text = "o",
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(horizontal = 16.dp),
             )
-            HorizontalDivider(modifier = Modifier.weight(1f))
+            HorizontalDivider(modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.secondary)
         }
 
         Spacer(Modifier.height(24.dp))
 
 
         OutlinedButton(
-            onClick = { /* pendiente: iniciar sesión con Google */ },
+            onClick = {  },
             modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.primary),
+            colors = ButtonDefaults.outlinedButtonColors(
+                containerColor = Color.White.copy(alpha = 0.9f),
+                contentColor = MaterialTheme.colorScheme.onSurface,
+            ),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.secondary),
         ) {
             Text("Continuar con Google")
         }
@@ -192,10 +205,13 @@ fun LoginScreen(
             Text(
                 text = "¿No tienes cuenta?",
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = MaterialTheme.colorScheme.onSurface,
             )
-            TextButton(onClick = { /* pendiente: pantalla de registro */ }) {
-                Text("Regístrate")
+            TextButton(
+                onClick = { },
+                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onSurface),
+            ) {
+                Text("Únete al club", fontWeight = FontWeight.Bold)
             }
         }
 
@@ -203,6 +219,16 @@ fun LoginScreen(
     }
 }
 
+
+@Composable
+private fun coloresCampo() = OutlinedTextFieldDefaults.colors(
+    focusedContainerColor = Color.White.copy(alpha = 0.9f),
+    unfocusedContainerColor = Color.White.copy(alpha = 0.9f),
+    errorContainerColor = Color.White.copy(alpha = 0.9f),
+    unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
+    focusedBorderColor = MaterialTheme.colorScheme.primary,
+    unfocusedLabelColor = MaterialTheme.colorScheme.onSurface,
+)
 
 @Preview(name = "Galaxy S24", showBackground = true, widthDp = 360, heightDp = 780)
 @Composable
